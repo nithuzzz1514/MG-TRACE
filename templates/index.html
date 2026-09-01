@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Email Threat Detection & Forensic Platform</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🛡️ AI Email Threat Detection & Forensic Intelligence</h1>
+    <p class="subtitle">Upload a raw email (.eml file) to run fraud detection, header forensics, and origin geolocation tracing.</p>
+
+    {% if error %}
+      <div class="alert">{{ error }}</div>
+    {% endif %}
+
+    <form action="/analyze" method="post" enctype="multipart/form-data" class="upload-form">
+      <input type="file" name="eml_file" accept=".eml" required>
+      <button type="submit">Analyze Email</button>
+    </form>
+
+    <div class="hint">
+      <strong>Don't have a sample?</strong> Two test files are included in
+      <code>sample_emails/</code> — one phishing example and one legitimate example.
+    </div>
+  </div>
+</body>
+</html>

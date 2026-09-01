@@ -1,0 +1,28 @@
+Delivered-To: victim@example.com
+Received: by 10.20.30.40 with SMTP id abc; Mon, 1 Sep 2026 08:12:03 -0700 (PDT)
+Received: from mail-relay-04.suspicious-host.net (mail-relay-04.suspicious-host.net. [185.220.101.47])
+        by mx.example.com with ESMTPS id xyz for <victim@example.com>;
+        Mon, 01 Sep 2026 08:12:01 -0700 (PDT)
+Received: from unknown (HELO fake-bank-secure.com) (203.0.113.55)
+        by mail-relay-04.suspicious-host.net with SMTP; Mon, 01 Sep 2026 15:11:55 +0000
+Authentication-Results: mx.example.com; spf=fail smtp.mailfrom=security@fake-bank-secure.com; dkim=fail; dmarc=fail (p=REJECT)
+From: "Bank Security Team" <security@fake-bank-secure.com>
+Reply-To: recovery-support@totally-legit-mail.ru
+To: victim@example.com
+Subject: URGENT: Your account will be suspended immediately
+Date: Mon, 01 Sep 2026 15:12:00 +0000
+Message-ID: <a1b2c3d4@fake-bank-secure.com>
+Content-Type: text/plain; charset="UTF-8"
+
+Dear Customer,
+
+Urgent action required: your bank account has been locked due to
+suspicious activity. Verify your identity now or your account will
+be permanently deleted within 24 hours.
+
+Click here immediately to confirm your details and avoid suspension:
+http://fake-bank-secure-verify.com/login
+
+This is a final notice. Act now.
+
+Bank Security Team

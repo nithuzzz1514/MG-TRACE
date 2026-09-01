@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Case {{ case.case_id }} — Forensic Report</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container wide">
+    <a href="/" class="back-link">&larr; Analyze another email</a>
+
+    <div class="score-banner verdict-{{ case.verdict|replace(' ', '-')|replace('/', '')|lower }}">
+      <div>
+        <span class="label">Case ID</span>
+        <span class="value">{{ case.case_id }}</span>
+      </div>
+      <div>
+        <span class="label">Fraud Score</span>
+        <span class="value big">{{ case.fraud_score }}/100</span>
+      </div>
+      <div>
+        <span class="label">Verdict</span>
+        <span class="value">{{ case.verdict }}</span>
+      </div>
+      <a href="/report/{{ case.case_id }}" class="download-btn">⬇ Download PDF Report</a>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>📧 Email Summary</h2>
+        <table>
+          <tr><th>Subject</th><td>{{ case.email_summary.subject }}</td></tr>
+          <tr><th>From</th><td>{{ case.email_summary.from }}</td></tr>
+          <tr><th>Reply-To</th><td>{{ case.email_summary.reply_to or '-' }}</td></tr>
+          <tr><th>Date</th><td>{{ case.email_summary.date }}</td></tr>
+          <tr><th>URLs</th><td>{{ case.email_summary.urls_found|join(', ') or 'None' }}</td></tr>
+          <tr><th>Attachments</th><td>{{ case.email_summary.attachments|join(', ') or 'None' }}</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>🧠 Content / NLP-ML Analysis</h2>
+        <table>
+          <tr><th>ML phishing probability</th><td>{{ (case.content_analysis.ml_phishing_probability * 100)|round(1) }}%</td></tr>
+          <tr><th>Combined content score</th><td>{{ (case.content_analysis.combined_score * 100)|round(1) }}%</td></tr>
+          <tr><th>Label</th><td>{{ case.content_analysis.label }}</td></tr>
+          <tr><th>Trigger phrases</th><td>{{ case.content_analysis.rule_hits|join(', ') or 'None found' }}</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>🔐 Header / Protocol Forensics</h2>
+        <table>
+          <tr><th>Sender domain</th><td>{{ case.header_forensics.domain or '-' }}</td></tr>
+          <tr><th>SPF</th><td>{{ case.header_forensics.spf }}</td></tr>
+          <tr><th>DKIM</th><td>{{ case.header_forensics.dkim }}</td></tr>
+          <tr><th>DMARC</th><td>{{ case.header_forensics.dmarc }}</td></tr>
+          <tr><th>Reply-To mismatch</th><td>{{ 'Yes ⚠️' if case.header_forensics.reply_to_mismatch else 'No' }}</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>🌍 Origin Trace / GeoLocation</h2>
+        <table>
+          <tr><th>Origin IP</th><td>{{ case.origin_trace.origin_ip or 'Not found' }}</td></tr>
+          {% set geo = case.origin_trace.geolocation %}
+          {% if geo and not geo.error %}
+          <tr><th>Country</th><td>{{ geo.country }}</td></tr>
+          <tr><th>Region / City</th><td>{{ geo.region }} / {{ geo.city }}</td></tr>
+          <tr><th>ISP / Org</th><td>{{ geo.isp }} / {{ geo.org }}</td></tr>
+          <tr><th>Hosting/VPN?</th><td>{{ 'Yes ⚠️' if geo.likely_hosting_or_vpn else 'No' }}</td></tr>
+          {% else %}
+          <tr><th>Geolocation</th><td>Unavailable{% if geo %} ({{ geo.error }}){% endif %}</td></tr>
+          {% endif %}
+          <tr><th>Attribution confidence</th><td>{{ case.origin_trace.attribution_confidence }}</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📋 Reasons for Verdict</h2>
+      <ul>
+        {% for reason in case.reasons %}
+          <li>{{ reason }}</li>
+        {% else %}
+          <li>No specific risk signals detected.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <p class="disclaimer">
+      ⚠️ This is an automated, confidence-scored assessment — not definitive proof.
+      A human analyst should review this case before any investigative or legal use.
+    </p>
+  </div>
+</body>
+</html>
